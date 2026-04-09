@@ -4,447 +4,92 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Маркетинговая стратегия с AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface-2: #1a1a26;
-    --border: #2a2a3a;
-    --border-active: #6c5ce7;
-    --accent: #6c5ce7;
-    --accent-glow: rgba(108, 92, 231, 0.15);
-    --accent-soft: #a29bfe;
-    --text: #e8e8f0;
-    --text-dim: #8888a0;
-    --text-muted: #55556a;
-    --code-bg: #0d0d14;
-    --success: #00cec9;
-    --brief-accent: #fd79a8;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Manrope', sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .noise {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0.03;
-    pointer-events: none;
-    z-index: 9999;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 256px 256px;
-  }
-
-  .hero {
-    position: relative;
-    padding: 100px 24px 80px;
-    text-align: center;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: radial-gradient(ellipse at 50% 80%, var(--accent-glow) 0%, transparent 50%);
-    pointer-events: none;
-  }
-
-  .hero-label {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--accent-soft);
-    border: 1px solid var(--border);
-    padding: 6px 16px;
-    border-radius: 100px;
-    margin-bottom: 32px;
-    position: relative;
-  }
-
-  .hero h1 {
-    font-family: 'Unbounded', sans-serif;
-    font-weight: 800;
-    font-size: clamp(32px, 6vw, 56px);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    margin-bottom: 20px;
-    position: relative;
-    background: linear-gradient(135deg, #fff 0%, var(--accent-soft) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero p {
-    font-size: 17px;
-    color: var(--text-dim);
-    max-width: 520px;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .container {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 0 20px 80px;
-  }
-
-  /* How to use */
-  .how-to {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px;
-    margin-bottom: 48px;
-  }
-
-  .how-to h2 {
-    font-family: 'Unbounded', sans-serif;
-    font-weight: 600;
-    font-size: 18px;
-    margin-bottom: 20px;
-    color: var(--text);
-  }
-
-  .step {
-    display: flex;
-    gap: 14px;
-    margin-bottom: 14px;
-    align-items: flex-start;
-  }
-
-  .step-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--accent-soft);
-    background: var(--accent-glow);
-    border: 1px solid rgba(108, 92, 231, 0.2);
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .step-text {
-    font-size: 14px;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
-  .note {
-    margin-top: 20px;
-    padding: 14px 18px;
-    background: rgba(108, 92, 231, 0.06);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 10px 10px 0;
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
-  .note strong { color: var(--accent-soft); }
-
-  /* Section labels */
-  .section-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-    padding-left: 2px;
-  }
-
-  /* Brief card */
-  .brief-card {
-    background: var(--surface);
-    border: 1px solid var(--brief-accent);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 48px;
-    box-shadow: 0 0 40px rgba(253, 121, 168, 0.06);
-  }
-
-  .brief-header {
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(253, 121, 168, 0.15);
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .brief-header:hover { background: rgba(253, 121, 168, 0.04); }
-
-  .brief-header-left {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .brief-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--brief-accent);
-    background: rgba(253, 121, 168, 0.1);
-    border: 1px solid rgba(253, 121, 168, 0.2);
-    padding: 4px 10px;
-    border-radius: 6px;
-  }
-
-  .brief-title {
-    font-family: 'Unbounded', sans-serif;
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .brief-sub {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-
-  .brief-body { padding: 0 24px 24px; }
-
-  .chevron {
-    font-size: 20px;
-    color: var(--text-muted);
-    transition: transform 0.3s;
-  }
-
-  .chevron.open { transform: rotate(180deg); }
-
-  /* Prompt cards */
-  .prompt-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-
-  .prompt-card.active {
-    border-color: var(--border-active);
-    box-shadow: 0 0 30px var(--accent-glow);
-  }
-
-  .prompt-header {
-    padding: 18px 22px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    cursor: pointer;
-    transition: background 0.2s;
-    user-select: none;
-  }
-
-  .prompt-header:hover { background: var(--surface-2); }
-
-  .prompt-id {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--accent-soft);
-    background: var(--accent-glow);
-    width: 34px; height: 34px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    border: 1px solid rgba(108, 92, 231, 0.15);
-  }
-
-  .prompt-info { flex: 1; }
-
-  .prompt-title {
-    font-family: 'Unbounded', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 1.3;
-  }
-
-  .prompt-desc {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-top: 3px;
-  }
-
-  .prompt-body {
-    padding: 0 22px 22px;
-    display: none;
-  }
-
-  .prompt-body.show { display: block; }
-
-  .code-block {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .code-block::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 100%;
-    background: linear-gradient(180deg, var(--accent) 0%, transparent 100%);
-    border-radius: 3px 0 0 3px;
-  }
-
-  .code-block pre {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    line-height: 1.7;
-    color: #c0c0d4;
-    white-space: pre-wrap;
-    word-break: break-word;
-    margin: 0;
-  }
-
-  .copy-btn {
-    position: absolute;
-    top: 12px; right: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 7px 14px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface-2);
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-    z-index: 2;
-  }
-
-  .copy-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent-soft);
-    background: var(--accent-glow);
-  }
-
-  .copy-btn.copied {
-    border-color: var(--success);
-    color: var(--success);
-    background: rgba(0, 206, 201, 0.08);
-  }
-
-  .prompt-tip {
-    margin-top: 12px;
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    padding-left: 14px;
-    border-left: 2px solid var(--border);
-  }
-
-  .prompt-tip strong { color: var(--text-dim); }
-
-  /* Footer */
-  .footer {
-    text-align: center;
-    padding: 40px 20px;
-    font-size: 12px;
-    color: var(--text-muted);
-    border-top: 1px solid var(--border);
-    margin-top: 40px;
-  }
-
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .prompt-body.show {
-    animation: fadeIn 0.25s ease;
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+:root{--bg:#08080d;--surface:#101018;--s2:#181824;--border:#252536;--bhi:#6c5ce7;--accent:#6c5ce7;--ag:rgba(108,92,231,.12);--as:#a29bfe;--tx:#e4e4ef;--tx2:#8a8aa4;--tx3:#505068;--cbg:#0b0b12;--ok:#00cec9;--brief:#fd79a8;--deep:#f39c12}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'Manrope',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+.hero{position:relative;padding:90px 24px 70px;text-align:center;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40%;left:-30%;width:160%;height:160%;background:radial-gradient(ellipse at 50% 90%,var(--ag) 0%,transparent 55%);pointer-events:none}
+.hero-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--as);border:1px solid var(--border);padding:5px 14px;border-radius:99px;margin-bottom:28px;position:relative}
+.hero h1{font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(28px,5.5vw,50px);line-height:1.12;letter-spacing:-.03em;margin-bottom:16px;position:relative;background:linear-gradient(135deg,#fff 0%,var(--as) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:16px;color:var(--tx2);max-width:500px;margin:0 auto;position:relative}
+.wrap{max-width:740px;margin:0 auto;padding:0 18px 80px}
+.howto{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:44px}
+.howto h2{font-family:'Unbounded',sans-serif;font-weight:600;font-size:17px;margin-bottom:18px}
+.st{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.sn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--as);background:var(--ag);border:1px solid rgba(108,92,231,.18);width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.st-t{font-size:14px;color:var(--tx2);line-height:1.55}
+.note{margin-top:18px;padding:12px 16px;background:rgba(108,92,231,.05);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;font-size:13px;color:var(--tx2);line-height:1.55}
+.note b{color:var(--as)}
+.slbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--tx3);margin-bottom:16px;padding-left:2px}
+.brief{background:var(--surface);border:1px solid var(--brief);border-radius:14px;overflow:hidden;margin-bottom:44px;box-shadow:0 0 36px rgba(253,121,168,.05)}
+.bh{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .2s;border-bottom:1px solid rgba(253,121,168,.12)}
+.bh:hover{background:rgba(253,121,168,.03)}
+.bhl{display:flex;align-items:center;gap:12px}
+.bbg{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--brief);background:rgba(253,121,168,.08);border:1px solid rgba(253,121,168,.18);padding:3px 9px;border-radius:5px}
+.bt{font-family:'Unbounded',sans-serif;font-weight:600;font-size:15px}
+.bs{font-size:12px;color:var(--tx2);margin-top:2px}
+.chev{font-size:18px;color:var(--tx3);transition:transform .3s}
+.chev.open{transform:rotate(180deg)}
+.bbody{padding:0 22px 22px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.card.on{border-color:var(--bhi);box-shadow:0 0 28px var(--ag)}
+.ch{padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:background .15s;user-select:none}
+.ch:hover{background:var(--s2)}
+.cid{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--as);background:var(--ag);width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(108,92,231,.12)}
+.ci{flex:1}
+.ct{font-family:'Unbounded',sans-serif;font-weight:600;font-size:13px;line-height:1.3}
+.cd{font-size:12px;color:var(--tx2);margin-top:2px}
+.cbody{padding:0 20px 20px;display:none}
+.cbody.show{display:block;animation:fadeIn .22s ease}
+.cblock{background:var(--cbg);border:1px solid var(--border);border-radius:9px;padding:18px;position:relative;overflow:hidden}
+.cblock::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--accent) 0%,transparent 100%);border-radius:3px 0 0 3px}
+.cblock pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#bbbbd0;white-space:pre-wrap;word-break:break-word;margin:0}
+.cpb{position:absolute;top:10px;right:10px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:var(--s2);color:var(--tx2);cursor:pointer;transition:all .2s;z-index:2}
+.cpb:hover{border-color:var(--accent);color:var(--as);background:var(--ag)}
+.cpb.ok{border-color:var(--ok);color:var(--ok);background:rgba(0,206,201,.06)}
+.tip{margin-top:10px;font-size:11.5px;color:var(--tx3);line-height:1.5;padding-left:12px;border-left:2px solid var(--border)}
+.tip b{color:var(--tx2)}
+.deep-label{display:inline-flex;align-items:center;gap:6px;margin-top:16px;margin-bottom:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--deep);padding:4px 10px;background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.2);border-radius:6px}
+.deep-block{background:var(--cbg);border:1px solid rgba(243,156,18,.2);border-radius:9px;padding:18px;position:relative;overflow:hidden}
+.deep-block::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--deep) 0%,transparent 100%);border-radius:3px 0 0 3px}
+.deep-block pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#bbbbd0;white-space:pre-wrap;word-break:break-word;margin:0}
+.foot{text-align:center;padding:36px 18px;font-size:11px;color:var(--tx3);border-top:1px solid var(--border);margin-top:36px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 </style>
 </head>
 <body>
-
-<div class="noise"></div>
-
 <div class="hero">
-  <div class="hero-label">AI Strategy Builder</div>
-  <h1>Маркетинговая<br>стратегия с AI</h1>
-  <p>11 промтов для построения полной стратегии бизнеса. Заполните бриф — получите готовый план.</p>
+<div class="hero-tag">ai strategy builder</div>
+<h1>Маркетинговая<br>стратегия с AI</h1>
+<p>11 промтов для построения полной стратегии бизнеса. Заполните бриф — получите готовый план.</p>
 </div>
-
-<div class="container">
-
-  <!-- How to use -->
-  <div class="how-to">
-    <h2>Как использовать</h2>
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-text">Откройте ChatGPT или Claude. Скопируйте бриф, заполните данные о бизнесе, отправьте первым сообщением.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-text">Отправляйте промты один за другим (1→11). AI уже знает ваш бизнес из брифа — повторно заполнять ничего не нужно.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-text">Сохраняйте ответы — вместе они формируют готовую маркетинговую стратегию.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-text">Нужно подробнее? Напишите: «Раскрой подробнее пункт [номер]».</div>
-    </div>
-    <div class="note">
-      <strong>Важно:</strong> Все промты дают тезисные ответы. Это сделано специально — чтобы вы получили стратегию, а не книгу. Подробности по любому разделу можно запросить отдельно.
-    </div>
-  </div>
-
-  <!-- Brief -->
-  <div class="section-label">Шаг 0 — Заполнить один раз</div>
-  <div class="brief-card">
-    <div class="brief-header" onclick="toggleBrief()">
-      <div class="brief-header-left">
-        <div class="brief-badge">Бриф</div>
-        <div>
-          <div class="brief-title">Бриф по бизнесу</div>
-          <div class="brief-sub">Заполните один раз — AI использует во всех промтах</div>
-        </div>
-      </div>
-      <span class="chevron open" id="briefChevron">▾</span>
-    </div>
-    <div class="brief-body" id="briefBody">
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyText(this, 'briefCode')">Копировать</button>
-        <pre id="briefCode">Заполни и сохрани этот бриф. Используй его как контекст для всех последующих запросов в этом чате.
+<div class="wrap">
+<div class="howto">
+<h2>Как использовать</h2>
+<div class="st"><div class="sn">1</div><div class="st-t">Откройте ChatGPT или Claude. Скопируйте бриф, заполните данные о бизнесе, отправьте первым сообщением.</div></div>
+<div class="st"><div class="sn">2</div><div class="st-t">Отправляйте промты один за другим (1→11). AI уже знает ваш бизнес из брифа и помнит все предыдущие ответы.</div></div>
+<div class="st"><div class="sn">3</div><div class="st-t">Сохраняйте ответы — вместе они формируют готовую маркетинговую стратегию.</div></div>
+<div class="st"><div class="sn">4</div><div class="st-t">У пунктов 4, 6, 8 есть бонус — <span style="color:var(--deep)">глубинный промт</span>. Отправьте его после базового ответа для экспертного разбора.</div></div>
+<div class="note"><b>Важно:</b> Все промты дают тезисные ответы — стратегия, а не книга. Подробности по любому разделу запрашивайте отдельно.</div>
+</div>
+<div class="slbl">Шаг 0 — заполнить один раз</div>
+<div class="brief">
+<div class="bh" onclick="toggleBrief()">
+<div class="bhl"><div class="bbg">Бриф</div><div><div class="bt">Бриф по бизнесу</div><div class="bs">Заполните один раз — AI использует во всех промтах</div></div></div>
+<span class="chev open" id="bc">▾</span>
+</div>
+<div class="bbody" id="bbd">
+<div class="cblock">
+<button class="cpb" onclick="event.stopPropagation();copyT(this,'bf')">Копировать</button>
+<pre id="bf">Заполни и сохрани этот бриф. Используй его как контекст для всех последующих запросов в этом чате.
 
 БРИФ:
 Название бизнеса: [НАЗВАНИЕ]
-Ниша: [НАПРИМЕР: ремонт квартир / женская одежда / грумінг / транспортные услуги]
+Ниша: [НАПРИМЕР: ремонт квартир / женская одежда / груминг / транспортные услуги]
 Город / Страна: [ГОРОД, СТРАНА]
 Что продаём: [ТОВАР ИЛИ УСЛУГА — 1-2 предложения]
 Средний чек: [СУММА]
@@ -455,265 +100,56 @@
 Бюджет на маркетинг: [СУММА В МЕСЯЦ ИЛИ "МИНИМАЛЬНЫЙ"]
 Главная задача: [ЧТО ХОТИТЕ ПОЛУЧИТЬ: больше клиентов / повторные продажи / узнаваемость]
 
-Подтверди, что запомнил бриф. После этого я буду давать тебе задания по разработке стратегии — используй данные из брифа автоматически, не спрашивая повторно.</pre>
-      </div>
-    </div>
-  </div>
-
-  <!-- Prompts -->
-  <div class="section-label">Шаги 1–11 — Отправлять последовательно</div>
-  <div id="promptList"></div>
-
-  <div class="footer">Маркетинговая стратегия с AI · 11 промтов · Заполните бриф → получите стратегию</div>
-
+Подтверди, что запомнил бриф. После этого я буду давать тебе задания по разработке стратегии — используй данные из брифа автоматически, не спрашивая повторно. Каждый следующий ответ должен учитывать ВСЕ предыдущие ответы в этом чате — стратегия строится последовательно, каждый блок опирается на предыдущие.</pre>
 </div>
-
+</div>
+</div>
+<div class="slbl">Шаги 1–11 — отправлять последовательно</div>
+<div id="pl"></div>
+<div class="foot">Маркетинговая стратегия с AI · 11 промтов</div>
+</div>
 <script>
-const prompts = [
-  {
-    id: 1,
-    title: "Особенность ниши / Контекст рынка",
-    desc: "Как клиент принимает решение о покупке в этой нише",
-    prompt: `Используя данные из моего брифа, проанализируй нишу коротко и по сути:
-
-1. Как клиенты в этой нише принимают решение — импульсно, через доверие или через долгое сравнение?
-2. Что больше всего влияет на выбор?
-3. Какой цикл сделки — от первого контакта до оплаты?
-4. Один главный вывод для стратегии.
-
-Ответ — тезисно, без воды, максимум 10-15 строк. Если мне нужно будет подробнее — я попрошу.`,
-    tip: "Этот пункт задаёт фундамент — от него зависят все остальные решения."
-  },
-  {
-    id: 2,
-    title: "Цель проекта",
-    desc: "Конкретные цели маркетинга",
-    prompt: `Используя данные из моего брифа, сформулируй цели маркетинга:
-
-1. 3 конкретные, измеримые цели (по SMART).
-2. Какая из них приоритетная и почему — в одном предложении.
-3. Что делать в первый месяц, что через 3 месяца.
-
-Ответ — тезисно, без длинных объяснений. Подробности дашь, когда попрошу.`,
-    tip: "Цели должны быть конкретными — не «больше клиентов», а «20 заявок в месяц»."
-  },
-  {
-    id: 3,
-    title: "Основные проблемы бизнеса",
-    desc: "Диагностика ключевых проблем",
-    prompt: `Используя данные из моего брифа, проведи экспресс-диагностику:
-
-1. Какие 3-5 ключевых проблем ты видишь в моём маркетинге?
-2. Какая из них критичная — одно предложение почему.
-3. Порядок решения — от важного к второстепенному, по одной строке на проблему.
-
-Коротко и по делу. Развёрнутые решения — по запросу.`,
-    tip: "AI может увидеть проблемы, которые вы не замечаете — будьте открыты к ответу."
-  },
-  {
-    id: 4,
-    title: "Позиционирование и УТП",
-    desc: "Уникальное торговое предложение",
-    prompt: `Используя данные из моего брифа, предложи позиционирование:
-
-1. 3 варианта позиционирования — по одному предложению каждое.
-2. 1 лучший вариант УТП в формате: "Мы [ЧТО ДЕЛАЕМ] для [КОГО], чтобы [РЕЗУЛЬТАТ]".
-3. Ключевое сообщение бренда: "Мы продаём не [ТОВАР], а [ЦЕННОСТЬ]".
-
-Без длинных обоснований. Если нужно объяснение выбора — попрошу отдельно.`,
-    tip: "Выберите один вариант и используйте его везде: в рекламе, на сайте, в соцсетях."
-  },
-  {
-    id: 5,
-    title: "Работа с болями ЦА",
-    desc: "Боли аудитории и как их закрывать",
-    prompt: `Используя данные из моего брифа, распиши боли целевой аудитории:
-
-Для каждого сегмента моих клиентов (определи 2-3 сегмента сам):
-- Топ-3 боли (коротко, по одной строке)
-- Как мы это закрываем (одна строка на решение)
-- Рекламный месседж под каждую боль (1 предложение)
-
-Формат — таблица или короткие блоки. Без пространных объяснений.`,
-    tip: "Эти месседжи можно сразу использовать как тексты для рекламных креативов."
-  },
-  {
-    id: 6,
-    title: "Офферы",
-    desc: "Лид-магниты и основные предложения",
-    prompt: `Используя данные из моего брифа, предложи офферы:
-
-1. Лид-магнит (бесплатное для первого контакта) — 2 варианта, по 1 строке каждый.
-2. Основной оффер — 2 варианта, по 1 строке.
-3. Для лучшего оффера — CTA (призыв к действию) и пример рекламного текста (3-4 предложения).
-
-Коротко. Подробный разбор каждого оффера — по запросу.`,
-    tip: "Хороший лид-магнит снижает стоимость заявки в 2-3 раза."
-  },
-  {
-    id: 7,
-    title: "Воронка заявок",
-    desc: "Путь клиента от рекламы до покупки",
-    prompt: `Используя данные из моего брифа, построй воронку заявок:
-
-1. Лучший вариант воронки для моего бизнеса — одна схема: Канал → Посадочная → Действие клиента → Обработка.
-2. Что должно быть на посадочной — 5-7 элементов списком.
-3. Альтернативный вариант воронки — коротко, 2-3 строки.
-
-Без длинных объяснений плюсов и минусов. Если нужно сравнение вариантов — попрошу.`,
-    tip: "Эту воронку можно передать подрядчику или маркетологу как ТЗ."
-  },
-  {
-    id: 8,
-    title: "Контент-стратегия",
-    desc: "Рубрики и форматы контента",
-    prompt: `Используя данные из моего брифа, разработай контент-стратегию:
-
-1. 4-5 рубрик контента — название + одно предложение описания.
-2. По 3 конкретные идеи постов/рилсов на каждую рубрику — одна строка на идею.
-3. Какой формат контента приоритетный для моей ниши (Reels / карусели / сторис) — одно предложение.
-
-Примеры текстов и контент-план на неделю — по запросу.`,
-    tip: "Попросите AI сделать контент-план на неделю после этого шага."
-  },
-  {
-    id: 9,
-    title: "Плейсменты и каналы",
-    desc: "Где продвигаться и в каком порядке",
-    prompt: `Используя данные из моего брифа, определи каналы продвижения:
-
-1. ТОП-3 каналов для моего бизнеса — название + почему в одном предложении.
-2. Порядок запуска — что первым, что вторым, что третьим.
-3. Какой канал НЕ стоит использовать — и почему в одном предложении.
-
-Без детальных бюджетов и прогнозов. Подробности по каждому каналу — по запросу.`,
-    tip: "Лучше 2 канала хорошо, чем 5 — кое-как."
-  },
-  {
-    id: 10,
-    title: "Альтернативные источники / Партнёрства",
-    desc: "Нестандартные каналы и креативные идеи",
-    prompt: `Используя данные из моего брифа, разработай альтернативные источники клиентов. Мне нужны не только стандартные партнёрства, но и КРЕАТИВНЫЕ ИДЕИ с минимальным бюджетом, которые дадут преимущество перед конкурентами.
-
-Часть 1 — Партнёрства:
-1. 3-5 типов партнёров, у которых есть доступ к моей ЦА — по одной строке.
-2. Для лучшего варианта — формат сотрудничества и пример первого сообщения партнёру.
-
-Часть 2 — Креативные активности (главное):
-Предложи 3-5 нестандартных идей продвижения, которые:
-- Стоят дёшево (до $100-200) или бесплатно
-- Создают прямой контакт с потенциальными клиентами
-- Вызывают эмоции, запоминаются, дают повод рассказать другим
-- Дают преимущество, которое конкуренты не копируют
-
-Примеры формата (НЕ копируй их, придумай под мой бизнес):
-- Груминг-салон → экскурсии для детей "Как ухаживать за питомцем"
-- Дизайн-студия → бранч для девушек с обсуждением трендов в интерьере
-- Ремонтная компания → открытый день на объекте "посмотри ремонт изнутри"
-- Транспортная компания → челлендж в TikTok "самый странный груз"
-
-Для каждой идеи: название + описание в 2-3 строки + какой результат даёт.`,
-    tip: "Это ваш секретный канал. Конкуренты делают рекламу — вы делаете события."
-  },
-  {
-    id: 11,
-    title: "Анализ конкурентов",
-    desc: "Исследование конкурентной среды без ссылок",
-    prompt: `Используя данные из моего брифа (названия конкурентов из брифа), проанализируй конкурентную среду.
-
-Важно: НЕ открывай ссылки и НЕ проси Instagram/Facebook. Работай с тем, что знаешь о нише, типичных игроках и стандартных стратегиях в этой категории.
-
-Для моей ниши и региона определи:
-1. Какие стратегии продвижения типичны для конкурентов в этой нише? (2-3 строки)
-2. Какие офферы чаще всего используют? (перечисли 3-4)
-3. Какие слабые места обычно есть у конкурентов в этой нише? (3-4 пункта)
-4. Где мы можем выиграть — 3 конкретные идеи, которые дадут преимущество.
-5. Что конкуренты в этой нише обычно НЕ делают, но стоило бы? (2-3 идеи)
-
-Ответ — тезисно. Если у меня будут скриншоты или описания конкретных конкурентов — я пришлю отдельно для детального разбора.`,
-    tip: "Пришлите AI скриншоты страниц конкурентов — получите точный персональный разбор."
-  }
+var P=[
+{id:1,t:"Особенность ниши / Контекст рынка",d:"Как клиент принимает решение о покупке",p:"Используя данные из брифа, проанализируй нишу коротко и по сути:\n\n1. Как клиенты в этой нише принимают решение — импульсно, через доверие или через долгое сравнение?\n2. Что больше всего влияет на выбор?\n3. Какой цикл сделки — от первого контакта до оплаты?\n4. Один главный вывод для стратегии.\n\nОтвет — тезисно, без воды, максимум 10-15 строк. Если мне нужно будет подробнее — я попрошу.",tip:"Этот пункт задаёт фундамент — от него зависят все остальные решения."},
+{id:2,t:"Цель проекта",d:"Конкретные цели маркетинга",p:"Используя данные из брифа и учитывая анализ ниши из предыдущего ответа, сформулируй цели маркетинга:\n\n1. 3 конкретные, измеримые цели (по SMART).\n2. Какая из них приоритетная и почему — в одном предложении.\n3. Что делать в первый месяц, что через 3 месяца.\n\nОтвет — тезисно, без длинных объяснений. Подробности дашь, когда попрошу.",tip:"Цели должны быть конкретными — не «больше клиентов», а «20 заявок в месяц»."},
+{id:3,t:"Основные проблемы бизнеса",d:"Диагностика ключевых проблем",p:"Используя данные из брифа и учитывая всё, что ты уже знаешь из предыдущих ответов (ниша, цели), проведи экспресс-диагностику:\n\n1. Какие 3-5 ключевых проблем ты видишь в моём маркетинге?\n2. Какая из них критичная — одно предложение почему.\n3. Порядок решения — от важного к второстепенному, по одной строке на проблему.\n\nКоротко и по делу. Развёрнутые решения — по запросу.",tip:"AI может увидеть проблемы, которые вы не замечаете — будьте открыты к ответу."},
+{id:4,t:"Позиционирование и УТП",d:"Уникальное торговое предложение",p:"Используя данные из брифа и учитывая все предыдущие ответы (ниша, цели, проблемы), предложи позиционирование:\n\n1. 3 варианта позиционирования — по одному предложению каждое.\n2. 1 лучший вариант УТП в формате: \"Мы [ЧТО ДЕЛАЕМ] для [КОГО], чтобы [РЕЗУЛЬТАТ]\".\n3. Ключевое сообщение бренда: \"Мы продаём не [ТОВАР], а [ЦЕННОСТЬ]\".\n\nБез длинных обоснований. Если нужно объяснение выбора — попрошу отдельно.",tip:"Выберите один вариант и используйте его везде: в рекламе, на сайте, в соцсетях.",deep:"Теперь раскрой позиционирование и УТП максимально глубоко. Опирайся на бриф, все предыдущие ответы и свои знания в маркетинге.\n\nДействуй как стратегический маркетолог с 15-летним опытом. Используй подходы из:\n- \"Позиционирование\" Джека Траута и Эла Райса — принцип владения словом в сознании клиента\n- \"Стратегия голубого океана\" Ким Чан и Рене Моборн — как выйти из конкуренции через создание новой ценности\n- Методология Jobs To Be Done (Клейтон Кристенсен) — за что клиент на самом деле \"нанимает\" наш продукт\n- Модель ценностных предложений Остервальдера — как связать боли/выгоды клиента с нашим продуктом\n\nРазбери:\n1. Карта позиционирования: где мы относительно конкурентов по 2 ключевым осям (определи оси сам исходя из ниши). Покажи текстом.\n2. JTBD-анализ: какую \"работу\" клиент нанимает наш продукт выполнить? Какая функциональная, эмоциональная и социальная работа?\n3. Категория vs. Позиция: мы входим в существующую категорию или создаём новую? Какую стратегию выбрать и почему?\n4. Value Proposition Canvas: боли клиента → наши \"обезболивающие\", выгоды клиента → наши \"создатели выгод\". Подробная таблица.\n5. Формулировка позиционирования по модели Джеффри Мура: \"Для [целевой клиент], который [потребность/ситуация], наш [продукт] — это [категория], который [ключевая выгода]. В отличие от [альтернатива], наш продукт [главное отличие].\"\n6. 3 реальных примера компаний из смежных ниш, которые сделали сильное позиционирование — что именно они сделали и что мы можем взять.\n\nОтвет — развёрнутый, экспертный, с обоснованиями."},
+{id:5,t:"Работа с болями ЦА",d:"Боли аудитории и как их закрывать",p:"Используя данные из брифа и учитывая все предыдущие ответы (ниша, цели, проблемы, позиционирование), распиши боли целевой аудитории:\n\nДля каждого сегмента моих клиентов (определи 2-3 сегмента сам):\n- Топ-3 боли (коротко, по одной строке)\n- Как мы это закрываем (одна строка на решение)\n- Рекламный месседж под каждую боль (1 предложение)\n\nФормат — таблица или короткие блоки. Без пространных объяснений.",tip:"Эти месседжи можно сразу использовать как тексты для рекламных креативов."},
+{id:6,t:"Офферы",d:"Лид-магниты и основные предложения",p:"Используя данные из брифа и учитывая все предыдущие ответы (ниша, цели, проблемы, позиционирование, боли ЦА), предложи офферы:\n\n1. Лид-магнит (бесплатное для первого контакта) — 2 варианта, по 1 строке каждый.\n2. Основной оффер — 2 варианта, по 1 строке.\n3. Для лучшего оффера — CTA (призыв к действию) и пример рекламного текста (3-4 предложения).\n\nКоротко. Подробный разбор каждого оффера — по запросу.",tip:"Хороший лид-магнит снижает стоимость заявки в 2-3 раза.",deep:"Теперь раскрой офферную стратегию максимально глубоко. Опирайся на бриф, все предыдущие ответы и свои знания в маркетинге.\n\nДействуй как эксперт по конверсии и офферам с 15-летним опытом. Используй подходы из:\n- Value Ladder (лестница ценности) Рассела Брансона — как выстроить линейку предложений от бесплатного до премиального\n- \"$100M Offers\" Алекса Хормози — как создать оффер настолько сильный, что люди чувствуют себя глупо, отказываясь\n- Модель Cialdini (6 принципов влияния) — какие триггеры использовать в каждом оффере\n- Фреймворк AIDA + PAS для текстов офферов\n\nРазбери:\n1. Value Ladder для моего бизнеса: выстрой полную лестницу от бесплатного лид-магнита до премиального предложения (4-5 ступеней). Для каждой ступени — что предлагаем, цена, цель ступени, конверсия в следующую.\n2. Анализ оффера по методу Хормози: Dream Outcome + Perceived Likelihood of Achievement + Time Delay + Effort & Sacrifice. Как максимизировать ценность каждого оффера?\n3. Для главного оффера — полный разбор:\n   - Заголовок по формуле 4U (Urgent, Unique, Ultra-specific, Useful)\n   - Стэкинг ценности: что входит и как подать, чтобы воспринимаемая ценность была в 10 раз выше цены\n   - Гарантия, которая снимает весь риск с клиента\n   - Триггеры срочности и дефицита (этичные)\n4. Для лид-магнита — полный разбор: почему именно этот формат, как он квалифицирует лида, какой следующий шаг после получения.\n5. 3 реальных примера сильных офферов из похожих ниш — что именно делает их эффективными.\n6. Полный рекламный текст для лучшего оффера по формуле PAS (Problem — Agitate — Solve) — 8-12 предложений, готовый к использованию.\n\nОтвет — развёрнутый, экспертный, с обоснованиями."},
+{id:7,t:"Воронка заявок",d:"Путь клиента от рекламы до покупки",p:"Используя данные из брифа и учитывая все предыдущие ответы (ниша, цели, проблемы, позиционирование, боли, офферы), построй воронку заявок:\n\n1. Лучший вариант воронки для моего бизнеса — одна схема: Канал → Посадочная → Действие клиента → Обработка.\n2. Что должно быть на посадочной — 5-7 элементов списком.\n3. Альтернативный вариант воронки — коротко, 2-3 строки.\n\nБез длинных объяснений плюсов и минусов. Если нужно сравнение вариантов — попрошу.",tip:"Эту воронку можно передать подрядчику или маркетологу как ТЗ."},
+{id:8,t:"Контент-стратегия",d:"Рубрики и форматы контента",p:"Используя данные из брифа и учитывая все предыдущие ответы (ниша, цели, проблемы, позиционирование, боли, офферы, воронка), разработай контент-стратегию:\n\n1. 4-5 рубрик контента — название + одно предложение описания.\n2. По 3 конкретные идеи постов/рилсов на каждую рубрику — одна строка на идею.\n3. Какой формат контента приоритетный для моей ниши (Reels / карусели / сторис) — одно предложение.\n\nПримеры текстов и контент-план на неделю — по запросу.",tip:"Попросите AI сделать контент-план на неделю после этого шага.",deep:"Теперь раскрой контент-стратегию максимально глубоко. Опирайся на бриф, все предыдущие ответы и свои знания в маркетинге.\n\nДействуй как Head of Content с опытом в digital-маркетинге 10+ лет. Используй подходы из:\n- \"They Ask, You Answer\" Маркуса Шеридана — контент, который продаёт через ответы на вопросы клиентов\n- \"Building a StoryBrand\" Дональда Миллера — как использовать структуру истории (герой → проблема → гид → план → результат) в каждом посте\n- Методология Gary Vee Content Model — один ключевой контент → нарезка на 30+ единиц для разных платформ\n- Hook-Story-Offer фреймворк Рассела Брансона для каждого поста\n- Стратегия \"Hero, Hub, Hygiene\" от YouTube/Google для планирования контента\n\nРазбери:\n1. Контент-матрица: по оси X — этап воронки (осведомлённость / рассмотрение / решение / лояльность), по оси Y — формат (Reels, каруселі, сторис, лонгрид). Для каждой ячейки — конкретный пример контента для моего бизнеса.\n2. StoryBrand-каркас для моего бренда: кто герой (клиент), какая его проблема (внешняя, внутренняя, философская), кто гид (мы), какой план, к какому результату ведём, какого провала помогаем избежать. Покажи как это ложится на контент.\n3. 5 \"столбовых\" (pillar) контент-тем с детальным описанием: почему именно эти темы, как каждая тема связана с бизнес-целью, как каждая тема закрывает конкретный этап воронки.\n4. Hook-банк: 15 конкретных хуков (первых фраз/заголовков) для Reels и постов, адаптированных под мой бизнес. Разбей по категориям: любопытство, боль, провокация, результат, история.\n5. Детальный контент-план на 2 недели: день, рубрика, формат, тема, хук, CTA. Готовый к исполнению.\n6. 3 реальных примера аккаунтов из похожих ниш, которые делают контент отлично — что именно у них работает и что мы можем адаптировать.\n7. Метрики: какие показатели контента отслеживать и какие цифры считать хорошими для моей ниши.\n\nОтвет — развёрнутый, экспертный, с обоснованиями."},
+{id:9,t:"Плейсменты и каналы",d:"Где продвигаться и в каком порядке",p:"Используя данные из брифа и учитывая все предыдущие ответы, определи каналы продвижения:\n\n1. ТОП-3 каналов для моего бизнеса — название + почему в одном предложении.\n2. Порядок запуска — что первым, что вторым, что третьим.\n3. Какой канал НЕ стоит использовать — и почему в одном предложении.\n\nБез детальных бюджетов и прогнозов. Подробности по каждому каналу — по запросу.",tip:"Лучше 2 канала хорошо, чем 5 — кое-как."},
+{id:10,t:"Альтернативные источники / Партнёрства",d:"Нестандартные каналы и креативные идеи",p:"Используя данные из брифа и учитывая все предыдущие ответы, разработай альтернативные источники клиентов. Мне нужны не только стандартные партнёрства, но и КРЕАТИВНЫЕ ИДЕИ с минимальным бюджетом, которые дадут преимущество перед конкурентами.\n\nЧасть 1 — Партнёрства:\n1. 3-5 типов партнёров, у которых есть доступ к моей ЦА — по одной строке.\n2. Для лучшего варианта — формат сотрудничества и пример первого сообщения партнёру.\n\nЧасть 2 — Креативные активности (главное):\nПредложи 3-5 нестандартных идей продвижения, которые:\n- Стоят дёшево (до $100-200) или бесплатно\n- Создают прямой контакт с потенциальными клиентами\n- Вызывают эмоции, запоминаются, дают повод рассказать другим\n- Дают преимущество, которое конкуренты не копируют\n\nПримеры формата (НЕ копируй их, придумай под мой бизнес):\n- Груминг-салон → экскурсии для детей \"Как ухаживать за питомцем\"\n- Дизайн-студия → бранч для девушек с обсуждением трендов в интерьере\n- Ремонтная компания → открытый день на объекте \"посмотри ремонт изнутри\"\n- Транспортная компания → челлендж в TikTok \"самый странный груз\"\n\nДля каждой идеи: название + описание в 2-3 строки + какой результат даёт.",tip:"Это ваш секретный канал. Конкуренты делают рекламу — вы делаете события."},
+{id:11,t:"Анализ конкурентов",d:"Исследование конкурентной среды без ссылок",p:"Используя данные из брифа и учитывая все предыдущие ответы, проанализируй конкурентную среду.\n\nВажно: НЕ открывай ссылки и НЕ проси Instagram/Facebook. Работай с тем, что знаешь о нише, типичных игроках и стандартных стратегиях в этой категории.\n\nДля моей ниши и региона определи:\n1. Какие стратегии продвижения типичны для конкурентов в этой нише? (2-3 строки)\n2. Какие офферы чаще всего используют? (перечисли 3-4)\n3. Какие слабые места обычно есть у конкурентов в этой нише? (3-4 пункта)\n4. Где мы можем выиграть — 3 конкретные идеи, которые дадут преимущество.\n5. Что конкуренты в этой нише обычно НЕ делают, но стоило бы? (2-3 идеи)\n\nОтвет — тезисно. Если у меня будут скриншоты или описания конкретных конкурентов — я пришлю отдельно для детального разбора.",tip:"Пришлите AI скриншоты страниц конкурентов — получите точный персональный разбор."}
 ];
 
-// Render prompts
-const list = document.getElementById('promptList');
-prompts.forEach(p => {
-  const card = document.createElement('div');
-  card.className = 'prompt-card';
-  card.innerHTML = `
-    <div class="prompt-header" onclick="togglePrompt(${p.id})">
-      <div class="prompt-id">${p.id}</div>
-      <div class="prompt-info">
-        <div class="prompt-title">${p.title}</div>
-        <div class="prompt-desc">${p.desc}</div>
-      </div>
-      <span class="chevron" id="chev${p.id}">▾</span>
-    </div>
-    <div class="prompt-body" id="body${p.id}">
-      <div class="code-block">
-        <button class="copy-btn" onclick="event.stopPropagation(); copyText(this, 'code${p.id}')">Копировать</button>
-        <pre id="code${p.id}">${p.prompt}</pre>
-      </div>
-      <div class="prompt-tip"><strong>Совет:</strong> ${p.tip}</div>
-    </div>
-  `;
-  list.appendChild(card);
+var pl=document.getElementById('pl');
+P.forEach(function(p){
+  var c=document.createElement('div');c.className='card';c.id='c'+p.id;
+  var deepHtml='';
+  if(p.deep){
+    deepHtml='<div class="deep-label">&#x1F9E0; Глубинный анализ — отправить после базового ответа</div><div class="deep-block"><button class="cpb" onclick="event.stopPropagation();copyT(this,\'d'+p.id+'\')">Копировать</button><pre id="d'+p.id+'">'+p.deep+'</pre></div>';
+  }
+  c.innerHTML='<div class="ch" onclick="tog('+p.id+')"><div class="cid">'+p.id+'</div><div class="ci"><div class="ct">'+p.t+(p.deep?' <span style="color:var(--deep);font-size:10px;font-family:JetBrains Mono,monospace;vertical-align:middle;margin-left:6px">+ DEEP</span>':'')+'</div><div class="cd">'+p.d+'</div></div><span class="chev" id="v'+p.id+'">▾</span></div><div class="cbody" id="b'+p.id+'"><div class="cblock"><button class="cpb" onclick="event.stopPropagation();copyT(this,\'p'+p.id+'\')">Копировать</button><pre id="p'+p.id+'">'+p.p+'</pre></div><div class="tip"><b>Совет:</b> '+p.tip+'</div>'+deepHtml+'</div>';
+  pl.appendChild(c);
 });
 
-// Toggle logic
-let openId = null;
-
-function togglePrompt(id) {
-  if (openId === id) {
-    document.getElementById('body' + id).classList.remove('show');
-    document.getElementById('chev' + id).classList.remove('open');
-    document.querySelector(`[onclick="togglePrompt(${id})"]`).parentElement.classList.remove('active');
-    openId = null;
-  } else {
-    if (openId !== null) {
-      document.getElementById('body' + openId).classList.remove('show');
-      document.getElementById('chev' + openId).classList.remove('open');
-      document.querySelector(`[onclick="togglePrompt(${openId})"]`).parentElement.classList.remove('active');
-    }
-    document.getElementById('body' + id).classList.add('show');
-    document.getElementById('chev' + id).classList.add('open');
-    document.querySelector(`[onclick="togglePrompt(${id})"]`).parentElement.classList.add('active');
-    openId = id;
-  }
+var cur=null;
+function tog(id){
+  if(cur===id){document.getElementById('b'+id).classList.remove('show');document.getElementById('v'+id).classList.remove('open');document.getElementById('c'+id).classList.remove('on');cur=null;return}
+  if(cur!==null){document.getElementById('b'+cur).classList.remove('show');document.getElementById('v'+cur).classList.remove('open');document.getElementById('c'+cur).classList.remove('on')}
+  document.getElementById('b'+id).classList.add('show');document.getElementById('v'+id).classList.add('open');document.getElementById('c'+id).classList.add('on');cur=id;
+  setTimeout(function(){document.getElementById('c'+id).scrollIntoView({behavior:'smooth',block:'nearest'})},50);
 }
 
-let briefOpen = true;
-function toggleBrief() {
-  briefOpen = !briefOpen;
-  document.getElementById('briefBody').style.display = briefOpen ? 'block' : 'none';
-  document.getElementById('briefChevron').classList.toggle('open', briefOpen);
-}
+var bo=true;
+function toggleBrief(){bo=!bo;document.getElementById('bbd').style.display=bo?'block':'none';document.getElementById('bc').classList.toggle('open',bo)}
 
-function copyText(btn, codeId) {
-  const text = document.getElementById(codeId).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓ Скопировано';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'Копировать';
-      btn.classList.remove('copied');
-    }, 2000);
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.textContent = '✓ Скопировано';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'Копировать';
-      btn.classList.remove('copied');
-    }, 2000);
-  });
+function copyT(btn,cid){
+  var t=document.getElementById(cid).textContent;
+  navigator.clipboard.writeText(t).then(function(){okB(btn)}).catch(function(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);okB(btn)});
 }
+function okB(b){b.textContent='\u2713 Скопировано';b.classList.add('ok');setTimeout(function(){b.textContent='Копировать';b.classList.remove('ok')},2000)}
 </script>
-
 </body>
 </html>
