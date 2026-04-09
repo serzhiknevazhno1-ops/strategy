@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Маркетинговая стратегия с AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface-2: #1a1a26;
+    --border: #2a2a3a;
+    --border-active: #6c5ce7;
+    --accent: #6c5ce7;
+    --accent-glow: rgba(108, 92, 231, 0.15);
+    --accent-soft: #a29bfe;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --text-muted: #55556a;
+    --code-bg: #0d0d14;
+    --success: #00cec9;
+    --brief-accent: #fd79a8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .noise {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  .hero {
+    position: relative;
+    padding: 100px 24px 80px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 50% 80%, var(--accent-glow) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 800;
+    font-size: clamp(32px, 6vw, 56px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    position: relative;
+    background: linear-gradient(135deg, #fff 0%, var(--accent-soft) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--text-dim);
+    max-width: 520px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* How to use */
+  .how-to {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 48px;
+  }
+
+  .how-to h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent-soft);
+    background: var(--accent-glow);
+    border: 1px solid rgba(108, 92, 231, 0.2);
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-text {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .note {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: rgba(108, 92, 231, 0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .note strong { color: var(--accent-soft); }
+
+  /* Section labels */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    padding-left: 2px;
+  }
+
+  /* Brief card */
+  .brief-card {
+    background: var(--surface);
+    border: 1px solid var(--brief-accent);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 48px;
+    box-shadow: 0 0 40px rgba(253, 121, 168, 0.06);
+  }
+
+  .brief-header {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(253, 121, 168, 0.15);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .brief-header:hover { background: rgba(253, 121, 168, 0.04); }
+
+  .brief-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brief-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--brief-accent);
+    background: rgba(253, 121, 168, 0.1);
+    border: 1px solid rgba(253, 121, 168, 0.2);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .brief-title {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .brief-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .brief-body { padding: 0 24px 24px; }
+
+  .chevron {
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: transform 0.3s;
+  }
+
+  .chevron.open { transform: rotate(180deg); }
+
+  /* Prompt cards */
+  .prompt-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .prompt-card.active {
+    border-color: var(--border-active);
+    box-shadow: 0 0 30px var(--accent-glow);
+  }
+
+  .prompt-header {
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    user-select: none;
+  }
+
+  .prompt-header:hover { background: var(--surface-2); }
+
+  .prompt-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-soft);
+    background: var(--accent-glow);
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(108, 92, 231, 0.15);
+  }
+
+  .prompt-info { flex: 1; }
+
+  .prompt-title {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .prompt-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+
+  .prompt-body {
+    padding: 0 22px 22px;
+    display: none;
+  }
+
+  .prompt-body.show { display: block; }
+
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .code-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, var(--accent) 0%, transparent 100%);
+    border-radius: 3px 0 0 3px;
+  }
+
+  .code-block pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #c0c0d4;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 2;
+  }
+
+  .copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent-soft);
+    background: var(--accent-glow);
+  }
+
+  .copy-btn.copied {
+    border-color: var(--success);
+    color: var(--success);
+    background: rgba(0, 206, 201, 0.08);
+  }
+
+  .prompt-tip {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding-left: 14px;
+    border-left: 2px solid var(--border);
+  }
+
+  .prompt-tip strong { color: var(--text-dim); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .prompt-body.show {
+    animation: fadeIn 0.25s ease;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<div class="hero">
+  <div class="hero-label">AI Strategy Builder</div>
+  <h1>Маркетинговая<br>стратегия с AI</h1>
+  <p>11 промтов для построения полной стратегии бизнеса. Заполните бриф — получите готовый план.</p>
+</div>
+
+<div class="container">
+
+  <!-- How to use -->
+  <div class="how-to">
+    <h2>Как использовать</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">Откройте ChatGPT или Claude. Скопируйте бриф, заполните данные о бизнесе, отправьте первым сообщением.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">Отправляйте промты один за другим (1→11). AI уже знает ваш бизнес из брифа — повторно заполнять ничего не нужно.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">Сохраняйте ответы — вместе они формируют готовую маркетинговую стратегию.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">Нужно подробнее? Напишите: «Раскрой подробнее пункт [номер]».</div>
+    </div>
+    <div class="note">
+      <strong>Важно:</strong> Все промты дают тезисные ответы. Это сделано специально — чтобы вы получили стратегию, а не книгу. Подробности по любому разделу можно запросить отдельно.
+    </div>
+  </div>
+
+  <!-- Brief -->
+  <div class="section-label">Шаг 0 — Заполнить один раз</div>
+  <div class="brief-card">
+    <div class="brief-header" onclick="toggleBrief()">
+      <div class="brief-header-left">
+        <div class="brief-badge">Бриф</div>
+        <div>
+          <div class="brief-title">Бриф по бизнесу</div>
+          <div class="brief-sub">Заполните один раз — AI использует во всех промтах</div>
+        </div>
+      </div>
+      <span class="chevron open" id="briefChevron">▾</span>
+    </div>
+    <div class="brief-body" id="briefBody">
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyText(this, 'briefCode')">Копировать</button>
+        <pre id="briefCode">Заполни и сохрани этот бриф. Используй его как контекст для всех последующих запросов в этом чате.
+
+БРИФ:
+Название бизнеса: [НАЗВАНИЕ]
+Ниша: [НАПРИМЕР: ремонт квартир / женская одежда / грумінг / транспортные услуги]
+Город / Страна: [ГОРОД, СТРАНА]
+Что продаём: [ТОВАР ИЛИ УСЛУГА — 1-2 предложения]
+Средний чек: [СУММА]
+Клиенты (B2B / B2C): [КТО ПОКУПАЕТ: возраст, пол, уровень дохода]
+Сильные стороны: [2-3 ПРЕИМУЩЕСТВА]
+Основные конкуренты: [2-3 НАЗВАНИЯ]
+Текущие каналы продвижения: [INSTAGRAM / САЙТ / САРАФАН / OLX / ДРУГОЕ]
+Бюджет на маркетинг: [СУММА В МЕСЯЦ ИЛИ "МИНИМАЛЬНЫЙ"]
+Главная задача: [ЧТО ХОТИТЕ ПОЛУЧИТЬ: больше клиентов / повторные продажи / узнаваемость]
+
+Подтверди, что запомнил бриф. После этого я буду давать тебе задания по разработке стратегии — используй данные из брифа автоматически, не спрашивая повторно.</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompts -->
+  <div class="section-label">Шаги 1–11 — Отправлять последовательно</div>
+  <div id="promptList"></div>
+
+  <div class="footer">Маркетинговая стратегия с AI · 11 промтов · Заполните бриф → получите стратегию</div>
+
+</div>
+
+<script>
+const prompts = [
+  {
+    id: 1,
+    title: "Особенность ниши / Контекст рынка",
+    desc: "Как клиент принимает решение о покупке в этой нише",
+    prompt: `Используя данные из моего брифа, проанализируй нишу коротко и по сути:
+
+1. Как клиенты в этой нише принимают решение — импульсно, через доверие или через долгое сравнение?
+2. Что больше всего влияет на выбор?
+3. Какой цикл сделки — от первого контакта до оплаты?
+4. Один главный вывод для стратегии.
+
+Ответ — тезисно, без воды, максимум 10-15 строк. Если мне нужно будет подробнее — я попрошу.`,
+    tip: "Этот пункт задаёт фундамент — от него зависят все остальные решения."
+  },
+  {
+    id: 2,
+    title: "Цель проекта",
+    desc: "Конкретные цели маркетинга",
+    prompt: `Используя данные из моего брифа, сформулируй цели маркетинга:
+
+1. 3 конкретные, измеримые цели (по SMART).
+2. Какая из них приоритетная и почему — в одном предложении.
+3. Что делать в первый месяц, что через 3 месяца.
+
+Ответ — тезисно, без длинных объяснений. Подробности дашь, когда попрошу.`,
+    tip: "Цели должны быть конкретными — не «больше клиентов», а «20 заявок в месяц»."
+  },
+  {
+    id: 3,
+    title: "Основные проблемы бизнеса",
+    desc: "Диагностика ключевых проблем",
+    prompt: `Используя данные из моего брифа, проведи экспресс-диагностику:
+
+1. Какие 3-5 ключевых проблем ты видишь в моём маркетинге?
+2. Какая из них критичная — одно предложение почему.
+3. Порядок решения — от важного к второстепенному, по одной строке на проблему.
+
+Коротко и по делу. Развёрнутые решения — по запросу.`,
+    tip: "AI может увидеть проблемы, которые вы не замечаете — будьте открыты к ответу."
+  },
+  {
+    id: 4,
+    title: "Позиционирование и УТП",
+    desc: "Уникальное торговое предложение",
+    prompt: `Используя данные из моего брифа, предложи позиционирование:
+
+1. 3 варианта позиционирования — по одному предложению каждое.
+2. 1 лучший вариант УТП в формате: "Мы [ЧТО ДЕЛАЕМ] для [КОГО], чтобы [РЕЗУЛЬТАТ]".
+3. Ключевое сообщение бренда: "Мы продаём не [ТОВАР], а [ЦЕННОСТЬ]".
+
+Без длинных обоснований. Если нужно объяснение выбора — попрошу отдельно.`,
+    tip: "Выберите один вариант и используйте его везде: в рекламе, на сайте, в соцсетях."
+  },
+  {
+    id: 5,
+    title: "Работа с болями ЦА",
+    desc: "Боли аудитории и как их закрывать",
+    prompt: `Используя данные из моего брифа, распиши боли целевой аудитории:
+
+Для каждого сегмента моих клиентов (определи 2-3 сегмента сам):
+- Топ-3 боли (коротко, по одной строке)
+- Как мы это закрываем (одна строка на решение)
+- Рекламный месседж под каждую боль (1 предложение)
+
+Формат — таблица или короткие блоки. Без пространных объяснений.`,
+    tip: "Эти месседжи можно сразу использовать как тексты для рекламных креативов."
+  },
+  {
+    id: 6,
+    title: "Офферы",
+    desc: "Лид-магниты и основные предложения",
+    prompt: `Используя данные из моего брифа, предложи офферы:
+
+1. Лид-магнит (бесплатное для первого контакта) — 2 варианта, по 1 строке каждый.
+2. Основной оффер — 2 варианта, по 1 строке.
+3. Для лучшего оффера — CTA (призыв к действию) и пример рекламного текста (3-4 предложения).
+
+Коротко. Подробный разбор каждого оффера — по запросу.`,
+    tip: "Хороший лид-магнит снижает стоимость заявки в 2-3 раза."
+  },
+  {
+    id: 7,
+    title: "Воронка заявок",
+    desc: "Путь клиента от рекламы до покупки",
+    prompt: `Используя данные из моего брифа, построй воронку заявок:
+
+1. Лучший вариант воронки для моего бизнеса — одна схема: Канал → Посадочная → Действие клиента → Обработка.
+2. Что должно быть на посадочной — 5-7 элементов списком.
+3. Альтернативный вариант воронки — коротко, 2-3 строки.
+
+Без длинных объяснений плюсов и минусов. Если нужно сравнение вариантов — попрошу.`,
+    tip: "Эту воронку можно передать подрядчику или маркетологу как ТЗ."
+  },
+  {
+    id: 8,
+    title: "Контент-стратегия",
+    desc: "Рубрики и форматы контента",
+    prompt: `Используя данные из моего брифа, разработай контент-стратегию:
+
+1. 4-5 рубрик контента — название + одно предложение описания.
+2. По 3 конкретные идеи постов/рилсов на каждую рубрику — одна строка на идею.
+3. Какой формат контента приоритетный для моей ниши (Reels / карусели / сторис) — одно предложение.
+
+Примеры текстов и контент-план на неделю — по запросу.`,
+    tip: "Попросите AI сделать контент-план на неделю после этого шага."
+  },
+  {
+    id: 9,
+    title: "Плейсменты и каналы",
+    desc: "Где продвигаться и в каком порядке",
+    prompt: `Используя данные из моего брифа, определи каналы продвижения:
+
+1. ТОП-3 каналов для моего бизнеса — название + почему в одном предложении.
+2. Порядок запуска — что первым, что вторым, что третьим.
+3. Какой канал НЕ стоит использовать — и почему в одном предложении.
+
+Без детальных бюджетов и прогнозов. Подробности по каждому каналу — по запросу.`,
+    tip: "Лучше 2 канала хорошо, чем 5 — кое-как."
+  },
+  {
+    id: 10,
+    title: "Альтернативные источники / Партнёрства",
+    desc: "Нестандартные каналы и креативные идеи",
+    prompt: `Используя данные из моего брифа, разработай альтернативные источники клиентов. Мне нужны не только стандартные партнёрства, но и КРЕАТИВНЫЕ ИДЕИ с минимальным бюджетом, которые дадут преимущество перед конкурентами.
+
+Часть 1 — Партнёрства:
+1. 3-5 типов партнёров, у которых есть доступ к моей ЦА — по одной строке.
+2. Для лучшего варианта — формат сотрудничества и пример первого сообщения партнёру.
+
+Часть 2 — Креативные активности (главное):
+Предложи 3-5 нестандартных идей продвижения, которые:
+- Стоят дёшево (до $100-200) или бесплатно
+- Создают прямой контакт с потенциальными клиентами
+- Вызывают эмоции, запоминаются, дают повод рассказать другим
+- Дают преимущество, которое конкуренты не копируют
+
+Примеры формата (НЕ копируй их, придумай под мой бизнес):
+- Груминг-салон → экскурсии для детей "Как ухаживать за питомцем"
+- Дизайн-студия → бранч для девушек с обсуждением трендов в интерьере
+- Ремонтная компания → открытый день на объекте "посмотри ремонт изнутри"
+- Транспортная компания → челлендж в TikTok "самый странный груз"
+
+Для каждой идеи: название + описание в 2-3 строки + какой результат даёт.`,
+    tip: "Это ваш секретный канал. Конкуренты делают рекламу — вы делаете события."
+  },
+  {
+    id: 11,
+    title: "Анализ конкурентов",
+    desc: "Исследование конкурентной среды без ссылок",
+    prompt: `Используя данные из моего брифа (названия конкурентов из брифа), проанализируй конкурентную среду.
+
+Важно: НЕ открывай ссылки и НЕ проси Instagram/Facebook. Работай с тем, что знаешь о нише, типичных игроках и стандартных стратегиях в этой категории.
+
+Для моей ниши и региона определи:
+1. Какие стратегии продвижения типичны для конкурентов в этой нише? (2-3 строки)
+2. Какие офферы чаще всего используют? (перечисли 3-4)
+3. Какие слабые места обычно есть у конкурентов в этой нише? (3-4 пункта)
+4. Где мы можем выиграть — 3 конкретные идеи, которые дадут преимущество.
+5. Что конкуренты в этой нише обычно НЕ делают, но стоило бы? (2-3 идеи)
+
+Ответ — тезисно. Если у меня будут скриншоты или описания конкретных конкурентов — я пришлю отдельно для детального разбора.`,
+    tip: "Пришлите AI скриншоты страниц конкурентов — получите точный персональный разбор."
+  }
+];
+
+// Render prompts
+const list = document.getElementById('promptList');
+prompts.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'prompt-card';
+  card.innerHTML = `
+    <div class="prompt-header" onclick="togglePrompt(${p.id})">
+      <div class="prompt-id">${p.id}</div>
+      <div class="prompt-info">
+        <div class="prompt-title">${p.title}</div>
+        <div class="prompt-desc">${p.desc}</div>
+      </div>
+      <span class="chevron" id="chev${p.id}">▾</span>
+    </div>
+    <div class="prompt-body" id="body${p.id}">
+      <div class="code-block">
+        <button class="copy-btn" onclick="event.stopPropagation(); copyText(this, 'code${p.id}')">Копировать</button>
+        <pre id="code${p.id}">${p.prompt}</pre>
+      </div>
+      <div class="prompt-tip"><strong>Совет:</strong> ${p.tip}</div>
+    </div>
+  `;
+  list.appendChild(card);
+});
+
+// Toggle logic
+let openId = null;
+
+function togglePrompt(id) {
+  if (openId === id) {
+    document.getElementById('body' + id).classList.remove('show');
+    document.getElementById('chev' + id).classList.remove('open');
+    document.querySelector(`[onclick="togglePrompt(${id})"]`).parentElement.classList.remove('active');
+    openId = null;
+  } else {
+    if (openId !== null) {
+      document.getElementById('body' + openId).classList.remove('show');
+      document.getElementById('chev' + openId).classList.remove('open');
+      document.querySelector(`[onclick="togglePrompt(${openId})"]`).parentElement.classList.remove('active');
+    }
+    document.getElementById('body' + id).classList.add('show');
+    document.getElementById('chev' + id).classList.add('open');
+    document.querySelector(`[onclick="togglePrompt(${id})"]`).parentElement.classList.add('active');
+    openId = id;
+  }
+}
+
+let briefOpen = true;
+function toggleBrief() {
+  briefOpen = !briefOpen;
+  document.getElementById('briefBody').style.display = briefOpen ? 'block' : 'none';
+  document.getElementById('briefChevron').classList.toggle('open', briefOpen);
+}
+
+function copyText(btn, codeId) {
+  const text = document.getElementById(codeId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Скопировано';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Копировать';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Скопировано';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Копировать';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
